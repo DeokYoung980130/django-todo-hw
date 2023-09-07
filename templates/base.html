@@ -52,7 +52,13 @@
                 </li>
             </ul>
             {% else %}
-                {{ user.username }}님 반갑습니다.
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" disabled>
+                        <span class="nav-link">
+                            {{ user.username }}님 반갑습니다.
+                        </span>
+                    </li>
+                </ul>
             {% endif %}
         </form>
     </div>
