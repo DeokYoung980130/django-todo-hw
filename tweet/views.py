@@ -11,22 +11,22 @@ def home(request):
     else:
         return redirect('/sign-in')
 
-
+@login_required()
 def tweet(request):
     if request.method == 'GET':
-        user = request.user.is_authenticated
-        if user:
-            all_tweet = TweetModel.objects.all().order_by('-created_at')
-            return render(request, 'tweet/home.html', {'tweet': all_tweet})
-        else:
-            return redirect('/sign-in')
+        all_tweet = TweetModel.objects.all().order_by('-created_at')
+        return render(request, 'tweet/home.html', {'tweet': all_tweet})
     elif request.method == 'POST':
         user = request.user
-        my_tweet = TweetModel()
-        my_tweet.author =user
-        my_tweet.content = request.POST.get('my-content', '')
-        my_tweet.save()
-        return redirect('/tweet')
+        content = request.POST.get('my-content', '')
+
+        if content == '':
+            all_tweet = TweetModel.objects.all().order_by('-created_at')
+            return render(request, 'tweet/home.html', {'error': '글은 공백일 수 없습니다.', 'tweet': all_tweet})
+        else:
+            my_tweet = TweetModel.objects.create(author=user, content=content)
+            my_tweet.save()
+            return redirect('/tweet')
 
 
 def delete_tweet(request, id):
